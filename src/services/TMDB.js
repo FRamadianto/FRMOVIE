@@ -16,7 +16,20 @@ export const tmdbAPI = createApi({
 
     // *  Get Movies by [Type]
     getMovies: builder.query({
-      query: () => `movie/popular?page=${page}&api_key=${tmdbApiKey}`,
+      query: ({ genreIdOrCategoryName, page }) => {
+        // * popular, top rated, upcoming => string
+        // get movue by category
+        if (genreIdOrCategoryName && typeof genreIdOrCategoryName === 'string') {
+          return `movie/${genreIdOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
+        }
+        // * number
+        // get movie by genre
+        if (genreIdOrCategoryName && typeof genreIdOrCategoryName === 'number') {
+          return `discover/movie?with_genres=${genreIdOrCategoryName}&page=${page}&api_key=${tmdbApiKey}`;
+        }
+
+        return `movie/popular?page=${page}&api_key=${tmdbApiKey}`;
+      },
     }),
   }),
 });
